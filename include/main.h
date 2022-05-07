@@ -79,6 +79,7 @@ void opcontrol(void);
 #include "subsysH/globals.hpp"
 #include "subsysH/drive.hpp"
 #include "subsysH/backLift.hpp"
+#include "subsysH/MOGOLift.hpp"
 #endif
 
 #endif  // _PROS_MAIN_H_
