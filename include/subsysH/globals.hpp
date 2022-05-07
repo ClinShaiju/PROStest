@@ -10,6 +10,8 @@
 //global variables
 extern bool isBackOut;
 extern bool backPressed;
+extern bool isLatchOut;
+extern bool latchPressed;
 
 //controller
 extern pros::Controller controller;
@@ -29,6 +31,11 @@ extern pros::Motor MOGOLiftR;
 
 //Back latch
 extern pros::Motor BackLatch;
+
+//pneumatics
+extern pros::ADIDigitalOut pistonLeft;
+extern pros::ADIDigitalOut pistonRight;
+
 
 //set brake mode
 void stopTypeBrake();

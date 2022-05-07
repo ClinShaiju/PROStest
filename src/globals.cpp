@@ -3,6 +3,8 @@
 //global variables
 bool isBackOut = false;
 bool backPressed = false;
+bool isLatchOut = false;
+bool latchPressed = false;
 
 //controller
 pros::Controller controller(pros::E_CONTROLLER_MASTER);
@@ -22,6 +24,10 @@ pros::Motor MOGOLiftR(7, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_
 
 //Back latch
 pros::Motor BackLatch(8, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_COUNTS);
+
+//pneumatics
+pros::ADIDigitalOut pistonLeft('B', false);
+pros::ADIDigitalOut pistonRight('A', false);
 
 //set brake mode
 void stopTypeBrake() {

@@ -80,6 +80,7 @@ void opcontrol(void);
 #include "subsysH/drive.hpp"
 #include "subsysH/backLift.hpp"
 #include "subsysH/MOGOLift.hpp"
+#include "subsysH/frontLatch.hpp"
 #endif
 
 #endif  // _PROS_MAIN_H_

@@ -71,10 +71,10 @@ void opcontrol() {
 	while (1) {
 		stopTypeBrake();
 
-
 		driveArcade();
 		runBackLift();
 		runMOGOLift();
+		runFrontLatch();
 
 		pros::delay(10);
 	}
