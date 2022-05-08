@@ -1,4 +1,5 @@
 #include "main.h"
+#include "pros/imu.hpp"
 
 //definitions
 #define VELOCITY 1.57480315
@@ -36,9 +37,5 @@ extern pros::Motor BackLatch;
 extern pros::ADIDigitalOut pistonLeft;
 extern pros::ADIDigitalOut pistonRight;
 
-
-//set brake mode
-void stopTypeBrake();
-
-//exponential drive
-double returnExponential(int axisValue);
+//sensors
+extern pros::Imu inertial;

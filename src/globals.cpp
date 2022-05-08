@@ -1,4 +1,6 @@
 #include "main.h"
+#include "pros/imu.hpp"
+#include "pros/motors.h"
 
 //global variables
 bool isBackOut = false;
@@ -29,32 +31,7 @@ pros::Motor BackLatch(8, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_
 pros::ADIDigitalOut pistonLeft('B', false);
 pros::ADIDigitalOut pistonRight('A', false);
 
-//set brake mode
-void stopTypeBrake() {
-    BackLatch.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
-    BackMOGO.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
+pros::Imu inertial(9);
 
-    BL.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
-    FL.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
-    BR.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
-    FR.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
+//sensors
 
-    MOGOLiftL.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
-    MOGOLiftR.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
-
-}
-//exponential drive
-double returnExponential(int axisValue) {
-  double percentage = axisValue;
-  if (percentage > 0) {
-    percentage = 1.2*pow(1.043, percentage) - 1.2 + 0.2 * percentage;
-  }
-  else {
-    percentage = -percentage;
-
-    percentage = 1.2*pow(1.043, percentage) - 1.2 + 0.2 * percentage;
-
-    percentage = -percentage;
-  }
-  return percentage;
-}

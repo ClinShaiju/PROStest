@@ -41,6 +41,7 @@
  */
 //#include "okapi/api.hpp"
 //#include "pros/api_legacy.h"
+#include "pros/apix.h"
 
 /**
  * If you find doing pros::Motor() to be tedious and you'd prefer just to do
@@ -75,7 +76,14 @@ void opcontrol(void);
 /**
  * You can add C++-only headers here
  */
+#include <math.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 //#include <iostream>
+#include "PID.hpp"
+#include "functions.hpp"
+
 #include "subsysH/globals.hpp"
 #include "subsysH/drive.hpp"
 #include "subsysH/backLift.hpp"

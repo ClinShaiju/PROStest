@@ -41,3 +41,10 @@ void driveTank() {
     //run the motors
     setDriveSpeed(returnExponential(leftY), returnExponential(rightY));
 }
+
+void resetDrive() {
+    BL.tare_position();
+    BR.tare_position();
+    FR.tare_position();
+    FL.tare_position();
+}

@@ -5,3 +5,5 @@ void setDriveSpeed(int left, int right);
 void driveArcade();
 
 void driveTank();
+
+void resetDrive();
