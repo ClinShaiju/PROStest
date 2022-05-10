@@ -14,17 +14,8 @@
  * to keep execution time for this mode under a few seconds.
  */
 void initialize() {
-	lv_obj_t * box = lv_obj_create(lv_scr_act(), NULL);
-	lv_obj_set_size(box, 100, 80);
-
-	lv_obj_t * child = lv_obj_create(box, NULL);
-	lv_obj_set_size(child, 50, 50);
-
-	lv_obj_t * label = lv_label_create(lv_scr_act(), NULL);
-	lv_label_set_text(label, "Test");
-
-	lv_obj_align(label, NULL, LV_ALIGN_CENTER, 0, 0);
-	lv_obj_set_pos(box, 15, 10);
+	PIDtuner();
+	pros::Task task(drivePID);
 }
 
 /**

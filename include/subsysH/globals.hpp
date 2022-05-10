@@ -39,3 +39,4 @@ extern pros::ADIDigitalOut pistonRight;
 
 //sensors
 extern pros::Imu inertial;
+extern pros::Gps gps;

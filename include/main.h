@@ -80,9 +80,11 @@ void opcontrol(void);
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-//#include <iostream>
-#include "PID.hpp"
-#include "functions.hpp"
+#include <iostream>
+
+#include "functions/PID.hpp"
+#include "functions/functions.hpp"
+#include "functions/PIDtuner.hpp"
 
 #include "subsysH/globals.hpp"
 #include "subsysH/drive.hpp"

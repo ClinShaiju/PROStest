@@ -39,7 +39,7 @@ int rightPos() {
     return (FR.get_position() + BR.get_position())/2;
 }
 
-int drivePID(){
+void drivePID(void*){
   stopTypeBrake();
   
   while(enableDrivePID){
@@ -124,6 +124,4 @@ int drivePID(){
     pros::delay(20);
 
   }
-
-  return 1;
 }
