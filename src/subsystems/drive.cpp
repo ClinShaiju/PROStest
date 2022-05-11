@@ -13,10 +13,10 @@ void driveArcade() {
     int rightTurn = controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
     
     //remove controller error
-    if (abs(leftForward) > 10)
+    if (abs(leftForward) < 10)
         leftForward = 0;
 
-    if (abs(rightTurn) > 10) 
+    if (abs(rightTurn) < 10) 
         rightTurn = 0;
 
     rightTurn = returnExponential(rightTurn);
@@ -29,13 +29,13 @@ void driveArcade() {
 void driveTank() {
      //get controller inputs
     int leftY = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
-    int rightY = controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
+    int rightY = controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y);
 
     //remove controller error
-    if (abs(leftY) > 10)
+    if (abs(leftY) < 10)
         leftY = 0;
 
-    if (abs(rightY) > 10) 
+    if (abs(rightY) < 10) 
         rightY = 0;
 
     //run the motors

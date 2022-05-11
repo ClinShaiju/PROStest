@@ -3,6 +3,7 @@
 //global values for PID
 extern int desiredValue;
 extern int desiredHeading;
+extern bool enableDrivePID;
 
 //Settings
 extern double kP;

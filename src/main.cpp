@@ -69,8 +69,10 @@ void autonomous() {
  * task, not resume it from where it left off.
  */
 void opcontrol() {
+	enableDrivePID = false;
+
+	stopTypeBrake();
 	while (1) {
-		stopTypeBrake();
 
 		driveArcade();
 		runBackLift();
