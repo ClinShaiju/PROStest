@@ -1,8 +1,13 @@
+#include "display/lv_core/lv_obj.h"
+#include "display/lv_misc/lv_color.h"
+#include "display/lv_objx/lv_btn.h"
+#include "display/lv_objx/lv_label.h"
 #include "main.h"
 
 static lv_obj_t* kp;
 static lv_obj_t* ki;
 static lv_obj_t* kd;
+
 
 static void getPIDvalues(void) {
     static char buffer[32];
@@ -56,27 +61,44 @@ static lv_res_t kdDown_action(lv_obj_t * btn) {
 }
 
 void PIDtuner(void) {
-    //480 x 272 pixels
+    //480 x 240 pixels
 
-    //create screen to change k values
+    /*Create a style for all objects*/
+    static lv_style_t tunerStyle;
+    lv_style_copy(&tunerStyle, &lv_style_plain); 
+    tunerStyle.body.main_color = LV_COLOR_ORANGE;
+    tunerStyle.text.color = LV_COLOR_WHITE;
+    tunerStyle.body.boder.color = LV_COLOR_WHITE;
+    tunerStyle.body.width = 8;
+    tunerStyle.body.radius = 10;
+
+    /*Create a screen to store PID settings objects*/
     lv_obj_t* settingsScr = lv_obj_create(NULL, NULL);
+    lv_obj_set_style(settingsScr, &tunerStyle);
 
     lv_scr_load(settingsScr);
 
-    //create settings title
+    /*Create and align a title called "Settings"*/
     lv_obj_t * settingsTitle = lv_label_create(settingsScr, NULL);
     lv_label_set_text(settingsTitle, "Settings");
+    lv_label_set_align(settingsTitle, LV_LABEL_ALIGN_CENTER);
     lv_obj_align(settingsTitle, NULL, LV_ALIGN_IN_TOP_MID, 0, 5);
 
-    //create buttons to change k values
+    /*Create buttons to change PID k values*/
     lv_obj_t* kpUp = lv_btn_create(settingsScr, NULL);
     lv_obj_t* kpDown = lv_btn_create(settingsScr, NULL);
     lv_obj_t* kiUp = lv_btn_create(settingsScr, NULL);
     lv_obj_t* kiDown = lv_btn_create(settingsScr, NULL);
     lv_obj_t* kdUp = lv_btn_create(settingsScr, NULL);
     lv_obj_t* kdDown = lv_btn_create(settingsScr, NULL);
+    lv_obj_align(kpUp, NULL, LV_ALIGN_IN_BOTTOM_LEFT, 0, -5);
+    lv_obj_align(kpDown, NULL, LV_ALIGN_IN_BOTTOM_LEFT, 20, -5);
+    lv_obj_align(kiUp, NULL, LV_ALIGN_IN_BOTTOM_MID, -10, -5);
+    lv_obj_align(kiDown, NULL, LV_ALIGN_IN_BOTTOM_MID, 10, -5);
+    lv_obj_align(kdUp, NULL, LV_ALIGN_IN_BOTTOM_RIGHT, -20, -5);
+    lv_obj_align(kdDown, NULL, LV_ALIGN_IN_BOTTOM_RIGHT, 0, -5);
 
-    //k button labels
+    /*Create labels for buttons to change PID k values*/
     lv_obj_t* kpUpLabel = lv_label_create(kpUp, NULL);
     lv_obj_t* kpDownLabel = lv_label_create(kpDown, NULL);
     lv_obj_t* kiUpLabel = lv_label_create(kiUp, NULL);
@@ -84,7 +106,8 @@ void PIDtuner(void) {
     lv_obj_t* kdUpLabel = lv_label_create(kdUp, NULL);
     lv_obj_t* kdDownLabel = lv_label_create(kdDown, NULL);
 
-    //set text for k setting labels
+
+    /*Set k Button label values*/
     lv_label_set_text(kpUpLabel, "+kP");
     lv_label_set_text(kiUpLabel, "+kI");
     lv_label_set_text(kdUpLabel, "+kD");
@@ -92,7 +115,15 @@ void PIDtuner(void) {
     lv_label_set_text(kiDownLabel, "-kI");
     lv_label_set_text(kdDownLabel, "-kD");
 
-    //set k button actions
+    /*Align labels on setting buttons to center*/
+    lv_label_set_align(kpUpLabel, LV_LABEL_ALIGN_CENTER);
+    lv_label_set_align(kiUpLabel, LV_LABEL_ALIGN_CENTER);
+    lv_label_set_align(kdUpLabel, LV_LABEL_ALIGN_CENTER);
+    lv_label_set_align(kpDownLabel, LV_LABEL_ALIGN_CENTER);
+    lv_label_set_align(kiDownLabel, LV_LABEL_ALIGN_CENTER);
+    lv_label_set_align(kdDownLabel, LV_LABEL_ALIGN_CENTER);
+
+    /*Set actions for k setting buttons*/
     lv_btn_set_action(kpUp, LV_BTN_ACTION_CLICK, kpUp_action);
     lv_btn_set_action(kpDown, LV_BTN_ACTION_CLICK, kpDown_action);
     lv_btn_set_action(kiUp, LV_BTN_ACTION_CLICK, kiUp_action);
@@ -100,12 +131,19 @@ void PIDtuner(void) {
     lv_btn_set_action(kdUp, LV_BTN_ACTION_CLICK, kdUp_action);
     lv_btn_set_action(kdDown, LV_BTN_ACTION_CLICK, kdDown_action);
 
-    //create k value labels
+    /*Create labels to display current k values*/
     kp = lv_label_create(settingsScr, NULL);
     ki = lv_label_create(settingsScr, NULL);
     kd = lv_label_create(settingsScr, NULL);
+    lv_obj_align(kp, NULL, LV_ALIGN_IN_TOP_LEFT, 0, 5);
+    lv_obj_align(ki, NULL, LV_ALIGN_IN_TOP_LEFT, 0, 25);
+    lv_obj_align(kd, NULL, LV_ALIGN_IN_TOP_LEFT, 0, 45);
 
-    //assign PID values to k labels
+    /*Create button to run PID test*/
+    lv_obj_t* runButton = lv_btn_create(settingsScr, NULL); 
+    lv_obj_align(runButon, NULL, LV_ALIGN_CENTER, 0, 0);
+
+    /*Update k values on display*/
     getPIDvalues();
     
 }
