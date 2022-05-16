@@ -4,6 +4,8 @@
 #include "display/lv_objx/lv_label.h"
 #include "main.h"
 
+const int buttonSize = 50;
+
 static lv_obj_t* kp;
 static lv_obj_t* ki;
 static lv_obj_t* kd;
@@ -11,51 +13,51 @@ static lv_obj_t* kd;
 
 static void getPIDvalues(void) {
     static char buffer[32];
-    snprintf(buffer, 32, "kP: %d", kP);
+    snprintf(buffer, 32, "kP: %.2f", kP);
     lv_label_set_text(kp, buffer);
 
     static char otherBuffer[32];
-    snprintf(otherBuffer, 32, "kI: %d", kI);
-    lv_label_set_text(kp, otherBuffer);
+    snprintf(otherBuffer, 32, "kI: %.2f", kI);
+    lv_label_set_text(ki, otherBuffer);
 
     static char notOtherBuffer[32];
-    snprintf(notOtherBuffer, 32, "kP: %d", kD);
-    lv_label_set_text(kp, notOtherBuffer);
+    snprintf(notOtherBuffer, 32, "kD: %.2f", kD);
+    lv_label_set_text(kd, notOtherBuffer);
 }
 
-static lv_res_t kpUp_action(lv_obj_t * btn) {
-    kP+=.05;
+static lv_res_t kpUp_action(lv_obj_t* btn) {
+    kP += .05;
     getPIDvalues();
 
     return LV_RES_OK; /*Return OK if the button is not deleted*/
 }
 
-static lv_res_t kpDown_action(lv_obj_t * btn) {
-    kP-=.05;
+static lv_res_t kpDown_action(lv_obj_t* btn) {
+    kP -= .05;
     getPIDvalues();
     return LV_RES_OK; /*Return OK if the button is not deleted*/
 }
 
-static lv_res_t kiUp_action(lv_obj_t * btn) {
-    kI+=.05;
+static lv_res_t kiUp_action(lv_obj_t* btn) {
+    kI += .05;
     getPIDvalues();
     return LV_RES_OK; /*Return OK if the button is not deleted*/
 }
 
-static lv_res_t kiDown_action(lv_obj_t * btn) {
-    kI-=.05;
+static lv_res_t kiDown_action(lv_obj_t* btn) {
+    kI -= .05;
     getPIDvalues();
     return LV_RES_OK; /*Return OK if the button is not deleted*/
 }
 
-static lv_res_t kdUp_action(lv_obj_t * btn) {
-    kD+=.05;   
+static lv_res_t kdUp_action(lv_obj_t* btn) {
+    kD += .05;
     getPIDvalues();
     return LV_RES_OK; /*Return OK if the button is not deleted*/
 }
 
-static lv_res_t kdDown_action(lv_obj_t * btn) {
-    kD-=.05;
+static lv_res_t kdDown_action(lv_obj_t* btn) {
+    kD -= .05;
     getPIDvalues();
     return LV_RES_OK; /*Return OK if the button is not deleted*/
 }
@@ -65,12 +67,10 @@ void PIDtuner(void) {
 
     /*Create a style for all objects*/
     static lv_style_t tunerStyle;
-    lv_style_copy(&tunerStyle, &lv_style_plain); 
+    lv_style_copy(&tunerStyle, &lv_style_plain);
     tunerStyle.body.main_color = LV_COLOR_ORANGE;
+    tunerStyle.body.grad_color = LV_COLOR_ORANGE;
     tunerStyle.text.color = LV_COLOR_WHITE;
-    tunerStyle.body.boder.color = LV_COLOR_WHITE;
-    tunerStyle.body.width = 8;
-    tunerStyle.body.radius = 10;
 
     /*Create a screen to store PID settings objects*/
     lv_obj_t* settingsScr = lv_obj_create(NULL, NULL);
@@ -79,7 +79,7 @@ void PIDtuner(void) {
     lv_scr_load(settingsScr);
 
     /*Create and align a title called "Settings"*/
-    lv_obj_t * settingsTitle = lv_label_create(settingsScr, NULL);
+    lv_obj_t* settingsTitle = lv_label_create(settingsScr, NULL);
     lv_label_set_text(settingsTitle, "Settings");
     lv_label_set_align(settingsTitle, LV_LABEL_ALIGN_CENTER);
     lv_obj_align(settingsTitle, NULL, LV_ALIGN_IN_TOP_MID, 0, 5);
@@ -91,12 +91,21 @@ void PIDtuner(void) {
     lv_obj_t* kiDown = lv_btn_create(settingsScr, NULL);
     lv_obj_t* kdUp = lv_btn_create(settingsScr, NULL);
     lv_obj_t* kdDown = lv_btn_create(settingsScr, NULL);
-    lv_obj_align(kpUp, NULL, LV_ALIGN_IN_BOTTOM_LEFT, 0, -5);
-    lv_obj_align(kpDown, NULL, LV_ALIGN_IN_BOTTOM_LEFT, 20, -5);
-    lv_obj_align(kiUp, NULL, LV_ALIGN_IN_BOTTOM_MID, -10, -5);
-    lv_obj_align(kiDown, NULL, LV_ALIGN_IN_BOTTOM_MID, 10, -5);
-    lv_obj_align(kdUp, NULL, LV_ALIGN_IN_BOTTOM_RIGHT, -20, -5);
-    lv_obj_align(kdDown, NULL, LV_ALIGN_IN_BOTTOM_RIGHT, 0, -5);
+    lv_obj_align(kpUp, NULL, LV_ALIGN_IN_BOTTOM_LEFT, 0, 0);
+    lv_obj_align(kpDown, NULL, LV_ALIGN_IN_BOTTOM_LEFT, 0, 0);
+    lv_obj_align(kiUp, NULL, LV_ALIGN_IN_BOTTOM_MID, 0, 0);
+    lv_obj_align(kiDown, NULL, LV_ALIGN_IN_BOTTOM_MID, 0, 0);
+    lv_obj_align(kdUp, NULL, LV_ALIGN_IN_BOTTOM_RIGHT, 0, 0);
+    lv_obj_align(kdDown, NULL, LV_ALIGN_IN_BOTTOM_RIGHT, 0, 0);
+
+    /*Set size for setting buttons*/
+    lv_obj_set_size(kpUp, buttonSize, buttonSize);
+    lv_obj_set_size(kpDown, buttonSize, buttonSize);
+    lv_obj_set_size(kiUp, buttonSize, buttonSize);
+    lv_obj_set_size(kiDown, buttonSize, buttonSize);
+    lv_obj_set_size(kdUp, buttonSize, buttonSize);
+    lv_obj_set_size(kdDown, buttonSize, buttonSize);
+
 
     /*Create labels for buttons to change PID k values*/
     lv_obj_t* kpUpLabel = lv_label_create(kpUp, NULL);
@@ -136,14 +145,14 @@ void PIDtuner(void) {
     ki = lv_label_create(settingsScr, NULL);
     kd = lv_label_create(settingsScr, NULL);
     lv_obj_align(kp, NULL, LV_ALIGN_IN_TOP_LEFT, 0, 5);
-    lv_obj_align(ki, NULL, LV_ALIGN_IN_TOP_LEFT, 0, 25);
-    lv_obj_align(kd, NULL, LV_ALIGN_IN_TOP_LEFT, 0, 45);
+    lv_obj_align(ki, kp, LV_ALIGN_OUT_BOTTOM_MID, 0, 0);
+    lv_obj_align(kd, ki, LV_ALIGN_OUT_BOTTOM_MID, 0, 0);
 
     /*Create button to run PID test*/
-    lv_obj_t* runButton = lv_btn_create(settingsScr, NULL); 
-    lv_obj_align(runButon, NULL, LV_ALIGN_CENTER, 0, 0);
+    lv_obj_t* runButton = lv_btn_create(settingsScr, NULL);
+    lv_obj_align(runButton, NULL, LV_ALIGN_CENTER, 0, 0);
 
     /*Update k values on display*/
     getPIDvalues();
-    
+
 }
