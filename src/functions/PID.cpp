@@ -1,9 +1,9 @@
 #include "main.h"
 
 //Settings
-double kP = 0.2;
-double kI = 0.0;
-double kD = 0.02;
+double kP = 0;
+double kI = 0;
+double kD = 0;
 double turnkP = .25;
 double turnkI = 0.0;
 double turnkD = .1;
