@@ -25,6 +25,9 @@ int turnPrevError = 0; //Position 20 miliseconds ago
 int turnDerivative; // error - prevError : Speed
 int turnTotalError = 0; //totalError = totalError + error
 
+double lateralMotorPower = 0;
+double averagePosition = 0;
+
 bool resetDriveSensors = false;
 
 //Variables modified for use
@@ -44,22 +47,17 @@ void drivePID(void*){
   
   while(enableDrivePID){
 
-    if (resetDriveSensors) {
+    if () {
       resetDriveSensors = false;
       resetDrive();
       inertial.tare();
     }
 
-
-    //Get the position of both motors
-    int leftMotorPosition = leftPos();
-    int rightMotorPosition = rightPos();
-
     ///////////////////////////////////////////
     //Lateral movement PID
     /////////////////////////////////////////////////////////////////////
     //Get average of the two motors
-    int averagePosition = (leftMotorPosition + rightMotorPosition)/2;
+    averagePosition = (leftPos() + rightPos())/2.0;
 
     //Potential
     error = desiredValue - averagePosition;
@@ -78,8 +76,7 @@ void drivePID(void*){
     //This would cap the integral
     totalError = abs(totalError) > maxIntegral ? signnum_c(totalError) * maxIntegral : totalError;
 
-    double lateralMotorPower = error * kP + derivative * kD + totalError * kI;
-    lateralMotorPower = 0;
+    lateralMotorPower = error * kP + derivative * kD + totalError * kI;
     /////////////////////////////////////////////////////////////////////
 
 

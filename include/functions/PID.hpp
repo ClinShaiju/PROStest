@@ -4,6 +4,7 @@
 extern int desiredValue;
 extern int desiredHeading;
 extern bool enableDrivePID;
+extern bool resetDriveSensors;
 
 //Settings
 extern double kP;
@@ -12,6 +13,9 @@ extern double kD;
 extern double turnkP;
 extern double turnkI;
 extern double turnkD;
+
+extern int error;
+extern double averagePosition;
 
 //get motor values
 int rightPos();

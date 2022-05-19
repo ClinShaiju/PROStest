@@ -5,6 +5,8 @@ const int buttonSize = 50;
 static lv_obj_t* kp;
 static lv_obj_t* ki;
 static lv_obj_t* kd;
+static lv_obj_t* motorPower;
+
 
 //screens
 lv_obj_t* settingsScr;
@@ -12,13 +14,25 @@ lv_obj_t* PIDrunning;
 lv_obj_t* graph;
 
 lv_obj_t* chart;
-lv_chart_series_t * speed;
+lv_chart_series_t * leftY;
+lv_chart_series_t * leftX;
+lv_chart_series_t * rightY;
+lv_chart_series_t * rightX;
 
 
 void my_task(void*)
 {
   /*Use the user_data*/
-  lv_chart_set_next(chart, speed, controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y));
+    lv_chart_set_point_count(chart, 750);
+    lv_chart_set_next(chart, leftY, controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y));
+    lv_chart_set_next(chart, leftX, controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_X));
+    lv_chart_set_next(chart, rightY, controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y));
+    lv_chart_set_next(chart, rightX, controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X));
+
+    static char theOtherBuffer[32];
+    snprintf(theOtherBuffer, 32, "Power: %.2f %d %d", averagePosition, leftPos(), rightPos());
+    lv_label_set_text(motorPower, theOtherBuffer);
+
 
   /*Do something with LittlevGL*/
 
@@ -39,13 +53,16 @@ static void getPIDvalues(void) {
 }
 
 static lv_res_t stopPID(lv_obj_t* btn) {
+    enableDrivePID = false;
     lv_scr_load(settingsScr);
-    desiredHeading = 0;
+    desiredValue = 0;
     return LV_RES_OK; /*Return OK if the button is not deleted*/
 }
 
 static lv_res_t startPID(lv_obj_t* btn) {
-    desiredHeading = 300;
+    resetDriveSensors = true;
+    enableDrivePID = true;
+    desiredValue = 30000;
     lv_scr_load(PIDrunning);
     return LV_RES_OK; /*Return OK if the button is not deleted*/
 }
@@ -93,8 +110,22 @@ void PIDtuner(void) {
     /*Create a style for all objects*/
     static lv_style_t tunerStyle;
     lv_style_copy(&tunerStyle, &lv_style_plain);
-    tunerStyle.body.main_color = LV_COLOR_ORANGE;
-    tunerStyle.body.grad_color = LV_COLOR_ORANGE;
+    tunerStyle.body.main_color = LV_COLOR_HEX(0x520031);
+    tunerStyle.body.grad_color = LV_COLOR_HEX(0x520031);
+    tunerStyle.text.color = LV_COLOR_WHITE;
+
+    static lv_style_t tunerBtnRelStyle;
+    lv_style_copy(&tunerBtnRelStyle, &tunerStyle);
+    tunerBtnRelStyle.body.main_color = LV_COLOR_HEX(0xa80054);
+    tunerBtnRelStyle.body.grad_color = LV_COLOR_HEX(0xa80054);
+    tunerBtnRelStyle.body.radius = 5;
+    tunerBtnRelStyle.body.border.color = LV_COLOR_WHITE;
+    tunerBtnRelStyle.body.border.width = 3;
+
+    static lv_style_t tunerBtnPressStyle;
+    lv_style_copy(&tunerBtnPressStyle, &tunerBtnRelStyle);
+    tunerBtnPressStyle.body.main_color = LV_COLOR_GRAY;
+    tunerBtnPressStyle.body.grad_color = LV_COLOR_GRAY;
 
     /*Create a screen to store PID settings objects*/
     settingsScr = lv_obj_create(NULL, NULL);
@@ -241,15 +272,51 @@ void PIDtuner(void) {
     lv_obj_align(chart, NULL, LV_ALIGN_IN_TOP_LEFT, 0, 0);
     lv_chart_set_type(chart, LV_CHART_TYPE_LINE);
     lv_obj_set_size(chart, 480, 240);
-    speed = lv_chart_add_series(chart, LV_COLOR_RED);
+    leftY = lv_chart_add_series(chart, LV_COLOR_RED);
+    leftX = lv_chart_add_series(chart, LV_COLOR_GREEN);
+    rightX = lv_chart_add_series(chart, LV_COLOR_YELLOW);
+    rightY = lv_chart_add_series(chart, LV_COLOR_BLUE);
     lv_chart_set_range(chart, -100, 100);
 
-    lv_chart_set_next(chart, speed, 10);
+    lv_scr_load(settingsScr);
 
-    lv_scr_load(graph);
-
-    static uint32_t user_data = 10;
     lv_task_t * task = lv_task_create(my_task, 20, LV_TASK_PRIO_MID, nullptr);
+
+    motorPower = lv_label_create(PIDrunning, NULL);
+
+    lv_obj_set_style(PIDrunning, &tunerStyle);
+    lv_obj_set_style(titleContainer, &tunerStyle);
+    lv_obj_set_style(bodyCont, &tunerStyle);
+    lv_obj_set_style(kSettingCont, &tunerStyle);
+    lv_obj_set_style(kPCont, &tunerStyle);
+    lv_obj_set_style(kICont, &tunerStyle);
+    lv_obj_set_style(kDCont, &tunerStyle);
+    lv_obj_set_style(settingsTitle, &tunerStyle);
+    lv_obj_set_style(kpUpLabel, &tunerStyle);
+    lv_obj_set_style(kpDownLabel, &tunerStyle);
+    lv_obj_set_style(kiUpLabel, &tunerStyle);
+    lv_obj_set_style(kiDownLabel, &tunerStyle);
+    lv_obj_set_style(kdDownLabel, &tunerStyle);
+    lv_obj_set_style(kdUpLabel, &tunerStyle);
+
+    lv_btn_set_style(runPIDButton, LV_BTN_STYLE_REL, &tunerBtnRelStyle);
+    lv_btn_set_style(kpUp, LV_BTN_STYLE_REL, &tunerBtnRelStyle);
+    lv_btn_set_style(kpDown, LV_BTN_STYLE_REL, &tunerBtnRelStyle);
+    lv_btn_set_style(kiUp, LV_BTN_STYLE_REL, &tunerBtnRelStyle);
+    lv_btn_set_style(kiDown, LV_BTN_STYLE_REL, &tunerBtnRelStyle);
+    lv_btn_set_style(kdDown, LV_BTN_STYLE_REL, &tunerBtnRelStyle);
+    lv_btn_set_style(kdUp, LV_BTN_STYLE_REL, &tunerBtnRelStyle);
+    lv_btn_set_style(stopPIDButton, LV_BTN_STYLE_REL, &tunerBtnRelStyle);
+
+    lv_btn_set_style(runPIDButton, LV_BTN_STYLE_PR, &tunerBtnPressStyle);
+    lv_btn_set_style(kpUp, LV_BTN_STYLE_PR, &tunerBtnPressStyle);
+    lv_btn_set_style(kpDown, LV_BTN_STYLE_PR, &tunerBtnPressStyle);
+    lv_btn_set_style(kiUp, LV_BTN_STYLE_PR, &tunerBtnPressStyle);
+    lv_btn_set_style(kiDown, LV_BTN_STYLE_PR, &tunerBtnPressStyle);
+    lv_btn_set_style(kdDown, LV_BTN_STYLE_PR, &tunerBtnPressStyle);
+    lv_btn_set_style(kdUp, LV_BTN_STYLE_PR, &tunerBtnPressStyle);
+    lv_btn_set_style(stopPIDButton, LV_BTN_STYLE_PR, &tunerBtnPressStyle);
+    
 
 
 }
